@@ -1,0 +1,68 @@
+transport_counts = df_corr['Transport'].value_counts()
+labels = [label for label in transport_counts.index]
+sizes = transport_counts.values
+
+# Create categories for Vehicle_Monthly_Distance_Km with 10 bins
+bins = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+distance_labels = ["0-1,000km", "1,000-2,000km", "2,000-3,000km", "3,000-4,000km", "4,000-5,000km",
+                   "5,000-6,000km", "6,000-7,000km", "7,000-8,000km", "8,000-9,000km", "9,000-10,000km"]
+df_corr['Distance_Category'] = pd.cut(df_corr['Vehicle_Monthly_Distance_Km'], bins=bins, labels=distance_labels)
+
+# Calculate the distribution of transport modes within each Distance_Category
+counts = df_corr.groupby(['Distance_Category', 'Transport'], observed=True).size().unstack(fill_value=0)
+
+# Create the combined plot
+fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(16, 7))
+
+
+# Pie chart
+axes[0].pie(sizes, labels=labels, autopct='%1.1f%%', startangle=120)
+axes[0].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+axes[0].set_title("Distribution of Transport Modes")
+
+# Bar plot
+counts.plot(kind='bar', ax=axes[1], width=0.8)
+axes[1].set_title('Number of People by Transport Mode and Monthly Distance Traveled')
+axes[1].set_xlabel('Monthly Distance Traveled (km)')
+axes[1].set_ylabel('Number of People')
+axes[1].legend(title='Transport Mode')
+plt.xticks(rotation=0)
+--------------------------------------------------------------------------------------------------------------------------------
+
+plt.figure(figsize=(10, 4))
+sns.set(style="whitegrid")  # Set background style to "whitegrid"
+
+ax = sns.boxplot(y='Transport', x='Vehicle_Monthly_Distance_Km', data=df_corr, palette="Set2", order=['walk/bicycle','public transport','car'])
+
+# title and axis labels
+plt.title('Monthly Distance Traveled by Transport Mode', fontsize=16, weight='bold')
+plt.xlabel('Monthly Distance Traveled (km)', fontsize=14)
+plt.ylabel('Transport Mode', fontsize=14)
+
+
+# Remove grid lines
+ax.grid(False)
+
+# Rotate X-axis labels for better readability
+plt.xticks(rotation=0, ha='right')
+
+# Adjust layout to prevent overlap
+plt.tight_layout()
+
+# save the figure in png-format
+plt.savefig('boxplot_transport.png')
+
+plt.show()
+--------------------------------------------------------------------------------------------------------------------------------------
+sns.kdeplot(data=df_corr, x="Vehicle_Monthly_Distance_Km", hue="Vehicle_Type")#,common_norm=False)
+plt.show()
+--------------------------------------------------------------------------------------------------------------------------------------
+correlations = df_corr[['CarbonEmission', 'Vehicle_Monthly_Distance_Km', 'public transport', 'walk/bicycle', 'car','car (type: petrol)', 'car (type: diesel)', 'car (type: hybrid)','car (type: lpg)', 'car (type: electric)']].corr()
+
+# delete upper diagonal matrix
+mask = np.triu(np.ones_like(correlations, dtype=bool))
+
+plt.figure(figsize=(11, 5))  #size of figure
+sns.heatmap(correlations,fmt = '.2f', cmap="coolwarm", annot=True, mask=mask,vmax=1,vmin=-1)
+plt.show()
+-------------------------------------------------------------------------------------------------------------------------------------
