@@ -1,4 +1,4 @@
-Carbon footprint is the total amount of greenhouse gas emissions directly and indirectly caused by yourdaily activities and lifestyle choices.
+Carbon footprint is the total amount of greenhouse gas emissions directly and indirectly caused by yourdaily activities and lifestyle choices.Reducing your carbon footprint can have a positive impact on the environment, by monitoring youremissions and implementing sustainable practices, you can make a meaningful impact on the environment.
 
 
 Dataset: The data has been synthetically generated, calculated based on weightings from various studies and sites that currently compute the dependent variable, carbon emissions, attempting to maintain values close to reality.The dataset is used in Tracking carbon emissions by human daily activities and lifestyle choices,Reducing the carbon emission.
