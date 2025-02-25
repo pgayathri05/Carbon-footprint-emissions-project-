@@ -1,0 +1,39 @@
+ordinal_variable_order = {
+    'Body_Type': ['underweight', 'normal', 'overweight', 'obese'],
+    'Diet': ['vegan','vegetarian','pescatarian','omnivore'],
+    'How_Often_Shower': ['less frequently','daily', 'twice a day','more frequently'],
+    'Social_Activity': ['never', 'sometimes','often'],
+    'Frequency_of_Traveling_by_Air': ['never', 'rarely', 'frequently', 'very frequently'],
+    'Waste_Bag_Size': ['small','medium', 'large', 'extra large'],
+    'Energy_efficiency': ['Yes', 'Sometimes', 'No']
+}
+
+# set the ordering
+for column, value_ordering in ordinal_variable_order.items():
+    df[column] = pd.Categorical(df[column], categories=value_ordering, ordered=True)
+
+#example
+df['Waste_Bag_Size'].unique()
+-------------------------------------------------------------------------------------------------------------------------------
+corr_columns =  ['Gender'] + df.select_dtypes(include=[np.number, 'category']).columns.tolist()
+df_corr_ordinal = df[corr_columns].copy()
+
+# convert Gender to Boolean-datatyp
+df_corr_ordinal['Gender'] = df['Gender'].map({'male': True, 'female': False})
+
+
+# encoding for ordinal variables based on defined order
+for column, column_ordering in ordinal_variable_order.items():
+   mapping = {category: idx for idx, category in enumerate(column_ordering)}
+   df_corr_ordinal[column] = df[column].map(mapping)
+
+# delete upper diagonal matrix
+mask = np.triu(np.ones_like(df_corr_ordinal.corr(), dtype=bool))
+
+plt.figure(figsize=(21, 7))  #size of figure
+#sns.heatmap(df_corr_ordinal.corr(),fmt = '.2f', cmap="coolwarm", annot=True)
+sns.heatmap(df_corr_ordinal.corr(),fmt = '.2f', cmap="seismic", annot=True, mask=mask,vmax=1,vmin=-1) # cmap="coolwarm"  cmap="seismic"
+plt.show()
+-----------------------------------------------------------------------------------------------------------------------------
+pd.DataFrame(df_corr_ordinal.corr()["CarbonEmission"].round(3).abs().sort_values(ascending=False)[1:])
+----------------------------------------------------------------------------------------------------------------------------
