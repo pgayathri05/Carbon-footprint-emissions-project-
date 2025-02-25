@@ -1,0 +1,16 @@
+df_corr=df[['CarbonEmission','Vehicle_Monthly_Distance_Km','Transport','Vehicle_Type']].copy()
+
+# Rename 'public' to 'public transport' and the car-typs - to make the information easier to understand
+df_corr['Vehicle_Type'] = df_corr['Vehicle_Type'].replace({'petrol': 'car (type: petrol)','diesel': 'car (type: diesel)','hybrid': 'car (type: hybrid)','lpg': 'car (type: lpg)','electric': 'car (type: electric)'})
+df_corr['Transport'] = df_corr['Transport'].replace({'public': 'public transport', 'private': 'car'})
+
+
+##create dummy-variables for correlation metric:
+for item in df_corr['Transport'].unique():
+    df_corr[str(item)] = df_corr['Transport'].apply(lambda x: 1 if item == x else 0)
+
+unique_vehicle_types = df_corr['Vehicle_Type'].dropna().unique().tolist()
+for item in unique_vehicle_types:
+    df_corr[str(item)] = df_corr['Vehicle_Type'].apply(lambda x: 1 if item == x else 0)
+
+df_corr.head()
